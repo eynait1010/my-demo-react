@@ -1,11 +1,12 @@
 import React from "./react";
-import ReactDOM from "react-dom";
+import ReactDOM from "./react-dom";
 
 let element = (
   <h2 className="bg" style={{ color: "khaki" }}>
-    demo txt
+    demo
+    <span style={{ color: "bisque", margin: "10px" }}>test</span>
+    text
   </h2>
 );
 
-console.log(element);
 ReactDOM.render(element, document.getElementById("root"));

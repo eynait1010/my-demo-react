@@ -1,10 +1,12 @@
 import { REACT_ELEMENT } from "./constants";
+import { wrapToVdom } from "./utils";
+
 function createElement(type, config, children) {
   let props = { ...config };
   if (arguments.length > 3) {
-    props.children = Array.prototype.slice.call(arguments, 2);
+    props.children = Array.prototype.slice.call(arguments, 2).map(wrapToVdom);
   } else if (arguments.length === 3) {
-    props.children = children;
+    props.children = wrapToVdom(children);
   }
   return {
     $$typeof: REACT_ELEMENT,
