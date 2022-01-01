@@ -1,2 +1,3 @@
 - [ ] js中各种继承的实现
 - [ ] Functional Programming
+- [ ] this的指向问题

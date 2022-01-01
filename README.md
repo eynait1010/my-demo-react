@@ -9,3 +9,7 @@ import ReactDOM from "react-dom";
 ## 支持函数式组件与类组件
 
 将一些UI与逻辑封装成组件，可以提高代码的复用
+
+## 类组件的更新
+1. props改变
+2. setState

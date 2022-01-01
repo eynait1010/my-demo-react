@@ -4,14 +4,13 @@ function render(vdom, container) {
 }
 function mount(vdom, container) {
   let newDom = createDom(vdom);
-  console.log(newDom);
   container.appendChild(newDom);
 }
 /**
  * 真实dom
  * @param {*} vdom 虚拟dom
  */
-function createDom(vdom) {
+export function createDom(vdom) {
   const { type, props } = vdom;
   let dom;
   if (type === REACT_TEXT) {
@@ -19,7 +18,7 @@ function createDom(vdom) {
   } else if (type.isReactComponent) {
     // 懒得拆开 之后需要再拆吧
     // 类组件一定要先于函数式组件处理，因为类也是函数
-    return createDom(new type(props).render());
+    return mountClassComponent(vdom);
   } else if (typeof type === "function") {
     return createDom(type(props));
   } else {
@@ -33,6 +32,15 @@ function createDom(vdom) {
       mount(item, dom);
     });
   }
+  vdom.dom = dom;
+  return dom;
+}
+function mountClassComponent(vdom) {
+  const { type, props } = vdom;
+  let classInstance = new type(props);
+  let renderVdom = classInstance.render();
+  vdom.oldRenderVdom = classInstance.oldRenderVdom = renderVdom;
+  let dom = createDom(renderVdom);
   return dom;
 }
 
@@ -53,6 +61,8 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
       for (let attrName in styleObj) {
         dom.style[attrName] = styleObj[attrName];
       }
+    } else if (/^on[A-Z].*/.test(key)) {
+      dom[key.toLowerCase()] = newProps[key];
     } else {
       dom[key] = newProps[key];
     }
