@@ -16,6 +16,12 @@ function createDom(vdom) {
   let dom;
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
+  } else if (type.isReactComponent) {
+    // 懒得拆开 之后需要再拆吧
+    // 类组件一定要先于函数式组件处理，因为类也是函数
+    return createDom(new type(props).render());
+  } else if (typeof type === "function") {
+    return createDom(type(props));
   } else {
     dom = document.createElement(type);
   }
@@ -29,6 +35,7 @@ function createDom(vdom) {
   }
   return dom;
 }
+
 /**
  * 挂载虚拟dom属性到真实dom上
  * @param {*} dom

@@ -1,0 +1,2 @@
+- [ ] js中各种继承的实现
+- [ ] Functional Programming
