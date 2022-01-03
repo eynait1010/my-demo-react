@@ -1,4 +1,4 @@
-import { REACT_TEXT } from "./constants";
+import { REACT_TEXT, REACT_FORWARD_REF_TYPE } from "./constants";
 import { addEvent } from "./event";
 function render(vdom, container) {
   mount(vdom, container);
@@ -14,8 +14,11 @@ function mount(vdom, container) {
 export function createDom(vdom) {
   const { type, props, ref } = vdom;
   let dom;
+  // debugger;
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
+  } else if (type.$$typeof === REACT_FORWARD_REF_TYPE) {
+    return mountForwardComponent(vdom);
   } else if (type.isReactComponent) {
     // 类组件一定要先于函数式组件处理，因为类也是函数
     return mountClassComponent(vdom);
@@ -43,6 +46,11 @@ function mountClassComponent(vdom) {
   vdom.oldRenderVdom = classInstance.oldRenderVdom = renderVdom;
   let dom = createDom(renderVdom);
   return dom;
+}
+function mountForwardComponent(vdom) {
+  let { type, props, ref } = vdom;
+  let renderVDom = type.render(props, ref);
+  return createDom(renderVDom);
 }
 
 /**

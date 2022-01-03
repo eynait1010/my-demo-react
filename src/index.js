@@ -1,42 +1,28 @@
 import React from "./react";
 import ReactDOM from "./react-dom";
 
+const TextInput = React.forwardRef((props, ref) => <input ref={ref} />);
 class ClassComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
-    this.state = { count: 0, name: "count" };
     this.inputRef = React.createRef();
   }
-
+  getFocus = () => {
+    this.inputRef.current.focus();
+  };
   render() {
-    const { color } = this.props;
     return (
-      <span style={{ color, margin: "10px" }}>
-        <input style={{ height: "22px", margin: "4px" }} ref={this.inputRef} />
-        <span
-          onClick={() => {
-            this.inputRef.current.focus();
-          }}
-        >
-          test
-        </span>
-      </span>
+      <div>
+        <TextInput ref={this.inputRef} />
+        <span onClick={this.getFocus}>获得焦点</span>
+      </div>
     );
   }
 }
-
 let element = (
-  <h2
-    className="bg"
-    style={{ color: "khaki" }}
-    onClick={() => {
-      console.log("h2 click");
-    }}
-  >
-    demo
-    <ClassComponent color="cadetblue" />
-  </h2>
+  <div className="bg" style={{ color: "bisque" }}>
+    <ClassComponent />
+  </div>
 );
 console.log(element); // "bisque" "cadetblue"
 ReactDOM.render(element, document.getElementById("root"));

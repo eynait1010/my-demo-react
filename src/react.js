@@ -1,4 +1,4 @@
-import { REACT_ELEMENT } from "./constants";
+import { REACT_ELEMENT, REACT_FORWARD_REF_TYPE } from "./constants";
 import { wrapToVdom } from "./utils";
 import { Component } from "./Component";
 
@@ -25,11 +25,19 @@ function createElement(type, config, children) {
 function createRef() {
   return { current: null };
 }
+function forwardRef(render) {
+  console.log("object");
+  return {
+    $$typeof: REACT_FORWARD_REF_TYPE,
+    render,
+  };
+}
 
 const React = {
   createElement,
   Component,
   createRef,
+  forwardRef,
 };
 
 export default React;
