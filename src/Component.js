@@ -28,7 +28,15 @@ function compareTwoVdom(parentDom, oldVDom, newVDom) {
   let newDom = createDom(newVDom);
   parentDom.replaceChild(newDom, oldDom);
 }
-
+export const updateQueue = {
+  isBatchingUpdate: false,
+  updaters: new Set(),
+  batchUpdate() {
+    for (var updater of updateQueue.updaters) {
+      updater.updateComponent();
+    }
+  },
+};
 class Updater {
   constructor(classInstance) {
     this.classInstance = classInstance;
@@ -39,8 +47,16 @@ class Updater {
     this.emitUpdate();
   }
   emitUpdate() {
-    this.updateComponent();
+    if (updateQueue.isBatchingUpdate) {
+      // 这里是把要更新的组件收集起来，所以updaters是个Set
+      updateQueue.updaters.add(this);
+    } else {
+      this.updateComponent();
+    }
   }
+  /**
+   * 到这个函数，就会去掉函数更新视图了，虽然有可能通过shouldComponentUpdate阻止
+   */
   updateComponent() {
     let { classInstance, pendingState } = this;
     if (pendingState.length) {
@@ -60,6 +76,11 @@ class Updater {
     return state;
   }
 }
+/**
+ *
+ * @param {*} classInstance
+ * @param {*} nextState
+ */
 function shouldUpdate(classInstance, nextState) {
   classInstance.state = nextState;
   classInstance.forceUpdate();

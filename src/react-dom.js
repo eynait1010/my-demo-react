@@ -1,4 +1,5 @@
 import { REACT_TEXT } from "./constants";
+import { addEvent } from "./event";
 function render(vdom, container) {
   mount(vdom, container);
 }
@@ -16,7 +17,6 @@ export function createDom(vdom) {
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
   } else if (type.isReactComponent) {
-    // 懒得拆开 之后需要再拆吧
     // 类组件一定要先于函数式组件处理，因为类也是函数
     return mountClassComponent(vdom);
   } else if (typeof type === "function") {
@@ -62,7 +62,7 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
         dom.style[attrName] = styleObj[attrName];
       }
     } else if (/^on[A-Z].*/.test(key)) {
-      dom[key.toLowerCase()] = newProps[key];
+      addEvent(dom, key.toLowerCase(), newProps[key]);
     } else {
       dom[key] = newProps[key];
     }

@@ -13,6 +13,15 @@ class ClassComponent extends React.Component {
   handleClick = () => {
     this.setState({ count: this.state.count + 1 });
     console.log(this.state);
+    this.setState({ count: this.state.count + 1 });
+    console.log(this.state);
+    setTimeout(() => {
+      console.log(this.state);
+      this.setState({ count: this.state.count + 1 });
+      console.log(this.state);
+      this.setState({ count: this.state.count + 1 });
+      console.log(this.state);
+    });
   };
   render() {
     const { color } = this.props;
@@ -25,7 +34,13 @@ class ClassComponent extends React.Component {
 }
 
 let element = (
-  <h2 className="bg" style={{ color: "khaki" }}>
+  <h2
+    className="bg"
+    style={{ color: "khaki" }}
+    onClick={() => {
+      console.log("h2 click");
+    }}
+  >
     demo
     <FunctionComponent color="bisque" />
     <ClassComponent color="cadetblue" />
