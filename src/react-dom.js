@@ -14,7 +14,6 @@ function mount(vdom, container) {
 export function createDom(vdom) {
   const { type, props, ref } = vdom;
   let dom;
-  // debugger;
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
   } else if (type.$$typeof === REACT_FORWARD_REF_TYPE) {
@@ -23,7 +22,7 @@ export function createDom(vdom) {
     // 类组件一定要先于函数式组件处理，因为类也是函数
     return mountClassComponent(vdom);
   } else if (typeof type === "function") {
-    return createDom(type(props));
+    return mountFunctionComponent(vdom);
   } else {
     dom = document.createElement(type);
   }
@@ -38,6 +37,13 @@ export function createDom(vdom) {
   vdom.dom = dom;
   ref && (ref.current = dom);
   return dom;
+}
+function mountFunctionComponent(vdom) {
+  let { type: functionComponent, props } = vdom;
+  let renderVdom = functionComponent(props); //获取组件将要渲染的虚拟DOM
+  vdom.oldRenderVdom = renderVdom;
+  if (!renderVdom) return null;
+  return createDom(renderVdom);
 }
 function mountClassComponent(vdom) {
   const { type, props } = vdom;
@@ -75,6 +81,14 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
     } else {
       dom[key] = newProps[key];
     }
+  }
+}
+export function findDOM(vdom) {
+  if (!vdom) return null;
+  if (vdom.dom) {
+    return vdom.dom;
+  } else {
+    return findDOM(vdom.oldRenderVdom);
   }
 }
 const ReactDom = {

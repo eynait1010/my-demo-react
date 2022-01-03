@@ -1,4 +1,4 @@
-import { createDom } from "./react-dom";
+import { createDom, findDOM } from "./react-dom";
 /**
  * 类组件
  */
@@ -14,17 +14,15 @@ export class Component {
     this.updater.addState(partialState);
   }
   forceUpdate() {
+    let oldRenderVdom = this.oldRenderVdom; //获取老的虚拟DOM
+    let oldDOM = findDOM(oldRenderVdom); //获取老的真实DOM
     let newRenderVdom = this.render();
-    compareTwoVdom(
-      this.oldRenderVdom.dom.parentNode,
-      this.oldRenderVdom,
-      newRenderVdom
-    );
+    compareTwoVdom(oldDOM.parentNode, oldRenderVdom, newRenderVdom);
     this.oldRenderVdom = newRenderVdom;
   }
 }
 function compareTwoVdom(parentDom, oldVDom, newVDom) {
-  let oldDom = oldVDom.dom;
+  let oldDom = findDOM(oldVDom);
   let newDom = createDom(newVDom);
   parentDom.replaceChild(newDom, oldDom);
 }

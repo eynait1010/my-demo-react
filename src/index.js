@@ -1,22 +1,24 @@
 import React from "./react";
 import ReactDOM from "./react-dom";
 
-const TextInput = React.forwardRef((props, ref) => <input ref={ref} />);
+class ClassComponent2 extends React.Component {
+  render() {
+    return <div>Three:{this.props.number}</div>;
+  }
+}
+function Func1(props) {
+  return <ClassComponent2 {...props} />;
+}
 class ClassComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+    this.state = { number: 0 };
+    setTimeout(() => {
+      this.setState({ number: 1 });
+    }, 1000);
   }
-  getFocus = () => {
-    this.inputRef.current.focus();
-  };
   render() {
-    return (
-      <div>
-        <TextInput ref={this.inputRef} />
-        <span onClick={this.getFocus}>获得焦点</span>
-      </div>
-    );
+    return <Func1 number={this.state.number} />;
   }
 }
 let element = (
