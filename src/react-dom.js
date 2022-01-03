@@ -12,7 +12,7 @@ function mount(vdom, container) {
  * @param {*} vdom 虚拟dom
  */
 export function createDom(vdom) {
-  const { type, props } = vdom;
+  const { type, props, ref } = vdom;
   let dom;
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
@@ -33,6 +33,7 @@ export function createDom(vdom) {
     });
   }
   vdom.dom = dom;
+  ref && (ref.current = dom);
   return dom;
 }
 function mountClassComponent(vdom) {

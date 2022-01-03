@@ -1,33 +1,26 @@
 import React from "./react";
 import ReactDOM from "./react-dom";
-function FunctionComponent(props) {
-  const { color } = props;
-  return <span style={{ color, margin: "10px" }}>test</span>;
-}
+
 class ClassComponent extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = { count: 0, name: "count" };
+    this.inputRef = React.createRef();
   }
-  handleClick = () => {
-    this.setState({ count: this.state.count + 1 });
-    console.log(this.state);
-    this.setState({ count: this.state.count + 1 });
-    console.log(this.state);
-    setTimeout(() => {
-      console.log(this.state);
-      this.setState({ count: this.state.count + 1 });
-      console.log(this.state);
-      this.setState({ count: this.state.count + 1 });
-      console.log(this.state);
-    });
-  };
+
   render() {
     const { color } = this.props;
     return (
-      <span style={{ color, margin: "10px" }} onClick={this.handleClick}>
-        {this.state.count}
+      <span style={{ color, margin: "10px" }}>
+        <input style={{ height: "22px", margin: "4px" }} ref={this.inputRef} />
+        <span
+          onClick={() => {
+            this.inputRef.current.focus();
+          }}
+        >
+          test
+        </span>
       </span>
     );
   }
@@ -42,9 +35,8 @@ let element = (
     }}
   >
     demo
-    <FunctionComponent color="bisque" />
     <ClassComponent color="cadetblue" />
   </h2>
 );
-console.log(element);
+console.log(element); // "bisque" "cadetblue"
 ReactDOM.render(element, document.getElementById("root"));
